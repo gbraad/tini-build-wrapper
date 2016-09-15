@@ -21,9 +21,13 @@ build_tini:
     - mkdir -p public
     - git clone https://github.com/krallin/tini.git upstream --depth 1 -b master
     - cd upstream
-    - cmake . && make
+    - cmake .
+    - make
+    - make package
     - mv tini ../public
     - mv tini-static ../public
+    - mv *.deb ../public
+    - mv *.rpm ../public
   artifacts:
     paths:
       - public
