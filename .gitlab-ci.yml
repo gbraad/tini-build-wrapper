@@ -1,0 +1,35 @@
+stages:
+  - prepare
+  - build
+  - publish
+
+build_image:
+  stage: prepare
+  image: docker:git
+  services:
+    - docker:dind
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - git clone https://github.com/krallin/tini.git upstream --depth 1 -b master
+    - docker build -t registry.gitlab.com/gbraad/tini:build ./upstream
+    - docker push registry.gitlab.com/gbraad/tini:build
+
+build_tini:
+  stage: build
+  image: registry.gitlab.com/gbraad/tini:build
+  script:
+    - mkdir -p public
+    - git clone https://github.com/krallin/tini.git upstream --depth 1 -b master
+    - cd upstream
+    - cmake . && make
+    - mv tini ../public
+    - mv tini-static ../public
+  artifacts:
+    paths:
+      - public
+
+pages:
+  stage: publish
+  artifacts:
+    paths:
+       - public
