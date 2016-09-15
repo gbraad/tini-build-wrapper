@@ -1,0 +1,5 @@
+[tini]
+name=Tini
+baseurl=http://gbraad.gitlab.io/tini/
+enabled=1
+gpgcheck=0
